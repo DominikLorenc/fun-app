@@ -13,7 +13,7 @@ describe('App', () => {
       </BrowserRouter>,
     );
 
-    const titleElement = screen.getByText(/🚀 Rick and Morty - Fan Service Beta Version 1.1.0/i);
+    const titleElement = screen.getByText(/🚀 Rick and Morty - Fan Service Beta Version 1.1.1/i);
     expect(titleElement).toBeInTheDocument();
   });
 });

@@ -1,15 +1,8 @@
 name: Deploy
 on:
-  workflow_dispatch:
-    inputs:
-      deploy-netlify:
-        type: boolean
-        description: Enable Netlify deployment
-        default: true
-      deploy-vercel:
-        type: boolean
-        description: Enable Vercel deployment
-        default: true
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -46,9 +39,6 @@ jobs:
           production-branch: master
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: 'Deploy from GitHub Actions'
-          enable-pull-request-comment: false
-          enable-commit-comment: true
-          overwrites-pull-request-comment: true
 
       - name: Install Vercel CLI
         run: npm install --global vercel@canary

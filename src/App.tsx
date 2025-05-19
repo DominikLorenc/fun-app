@@ -8,7 +8,7 @@ const App = () => {
         <h1 className="text-xl font-bold text-center">
           🚀 Rick and Morty - Fan Service Beta Version 1.1.1
         </h1>
-        <p>Test qwe qwe </p>
+        <p>Test </p>
       </div>
       <Outlet />
     </div>

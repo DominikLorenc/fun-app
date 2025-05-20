@@ -1,4 +1,4 @@
-name: Pull Request Workflow
+name: Pull Request
 
 on:
   pull_request:
@@ -6,22 +6,16 @@ on:
       - master
 
 jobs:
-  verify-pr:
+  pr-check:
+    environment:
+      name: 'Preview'
     runs-on: ubuntu-latest
-    env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-
-      - name: Install deps
-        run: npm ci
+      - name: Configure node
+        uses: ./.github/actions/setup-project
 
       - name: Lint code
         run: npm run lint
@@ -29,29 +23,11 @@ jobs:
       - name: Run unit tests
         run: npm run test
 
-      - name: Build project
-        run: npm run build
-
-      - name: Install Vercel CLI
-        run: npm install --global vercel@canary
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Deploy Project Artifacts to Vercel
-        run: |
-          DEPLOY_OUTPUT="$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})"
-          DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep http | tail -n 1)
-          echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
-
-      - name: Comment on PR
-        uses: actions/github-script@v7
+      - name: Deploy app to Vercel preview env
+        uses: ./.github/actions/deploy-vercel
         with:
-          script: |
-            const { DEPLOY_URL } = process.env;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-             body: `🔍 Preview URL: ${DEPLOY_URL}`
-            })
+          mode: 'preview'
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

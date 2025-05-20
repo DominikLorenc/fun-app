@@ -5,9 +5,9 @@ on:
 
 jobs:
   deploy-vercel:
-    environment:
-      name: 'Development'
     runs-on: ubuntu-latest
+    environment:
+      name: 'Staging'
 
     steps:
       - name: Checkout repository

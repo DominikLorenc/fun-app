@@ -6,7 +6,7 @@ on:
 jobs:
   deploy-netlify:
     environment:
-      name: 'Production'
+      name: 'Development'
     runs-on: ubuntu-latest
 
     steps:
